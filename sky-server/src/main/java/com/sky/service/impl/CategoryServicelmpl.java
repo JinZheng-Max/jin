@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class CategoryServicelmpl implements CategoryService {
@@ -70,4 +71,31 @@ public class CategoryServicelmpl implements CategoryService {
 
         categoryMapper.update(category);
     }
+
+    @Override
+    public List<Category> list(Integer type) {
+        return categoryMapper.list(type);
+
+    }
+
+    @Override
+    public void delete(Long id) {
+        categoryMapper.deleteById(id);
+    }
+
+
+    /**
+     * 修改分类
+     *
+     * @param categoryDTO
+     */
+    public void update(CategoryDTO categoryDTO) {
+        Category category = new Category();
+        BeanUtils.copyProperties(categoryDTO, category);
+        category.setUpdateTime(LocalDateTime.now());
+        category.setUpdateUser(BaseContext.getCurrentId());
+        categoryMapper.update(category);
+    }
+
+
 }

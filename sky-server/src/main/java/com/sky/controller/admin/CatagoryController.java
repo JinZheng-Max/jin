@@ -3,6 +3,7 @@ package com.sky.controller.admin;
 
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
+import com.sky.entity.Category;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
@@ -11,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/category")
@@ -47,6 +50,19 @@ public class CatagoryController {
         return Result.success(pageResult);
     }
     /**
+     * 根据类型分类查询
+     *
+     * @param type
+     * @return
+     */
+    @GetMapping("/list")
+    @ApiOperation(value = "查询类型分类方法")
+    public Result<List<Category>> list(Integer type) {
+        log.info("查询类型分类：{}", type);
+        List<Category> list= categoryService.list(type);
+        return Result.success(list);
+    }
+    /**
      * 禁用启用菜品、套餐
      *
      * @param id，status
@@ -57,6 +73,33 @@ public class CatagoryController {
     public Result startOrStop(@PathVariable Integer status, Long id) {
         log.info("启用禁用分类：{},{}", status,id);
         categoryService.startOrStop(status, id);
+        return Result.success();
+    }
+
+    /**
+     * 删除分类
+     *
+     * @param id
+     * @return
+     */
+    @DeleteMapping
+    @ApiOperation(value = "根据id删除分类方法")
+    public Result delete(Long id) {
+        log.info("删除分类：{}", id);
+        categoryService.delete(id);
+        return Result.success();
+    }
+    /**
+     * 修改分类
+     *
+     * @param categoryDTO
+     * @return
+     */
+    @PutMapping
+    @ApiOperation(value = "修改分类方法")
+    public Result update(@RequestBody CategoryDTO categoryDTO) {
+        log.info("修改分类：{}", categoryDTO);
+        categoryService.update(categoryDTO);
         return Result.success();
     }
 }
