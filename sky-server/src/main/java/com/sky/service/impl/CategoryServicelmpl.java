@@ -79,6 +79,7 @@ public class CategoryServicelmpl implements CategoryService {
     }
 
     @Override
+    //todo 删除套餐关联其他表的餐品不能删除分类
     public void delete(Long id) {
         categoryMapper.deleteById(id);
     }

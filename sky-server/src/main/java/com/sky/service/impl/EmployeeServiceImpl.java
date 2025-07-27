@@ -9,9 +9,11 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
+import com.sky.exception.DeletionNotAllowedException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
@@ -148,4 +150,26 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setUpdateUser(BaseContext.getCurrentId());
             employeeMapper.update(employee);
     }
+
+    @Override
+    public void editPassword(PasswordEditDTO passwordEditDTO) {
+        //线程获取当前用户id
+        Long empId = BaseContext.getCurrentId();
+        Employee employee = employeeMapper.getById(empId);
+        if (employee == null) {
+            throw new DeletionNotAllowedException("员工不存在，ID: " + empId);
+        }
+      String  password = DigestUtils.md5DigestAsHex(passwordEditDTO.getOldPassword().getBytes());
+        if (!password.equals(employee.getPassword())) {
+            throw new DeletionNotAllowedException(MessageConstant.PASSWORD_ERROR);
+        }
+        //修改密码,加密存储
+        employee.setPassword(DigestUtils.md5DigestAsHex(passwordEditDTO.getNewPassword().getBytes()));
+
+        employeeMapper.update(employee);
+
+    }
+
+
+
 }
